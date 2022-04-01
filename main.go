@@ -11,14 +11,12 @@ import (
 )
 
 type payload struct {
-	Workspace string `json:"workspace"`
 	ComPort   string `json:"comPort"`
 	Cmd       string `json:"cmd"`
 	Timer     int    `json:"timer"`
 }
 
 type outPayload struct {
-	Workspace string `json:"workspace"`
 	ComPort   string `json:"comPort"`
 	Cmd       string `json:"cmd"`
 	Output    string `json:"output"`
@@ -34,7 +32,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		output := runCommand()
 		log.Println("Command Run has been completed")
 		response := outPayload{
-			Workspace: newPayload.Workspace,
 			ComPort:   newPayload.ComPort,
 			Cmd:       newPayload.Cmd,
 			Output:    output,
@@ -44,7 +41,6 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(response)
 	} else {
 		response := outPayload{
-			Workspace: newPayload.Workspace,
 			ComPort:   newPayload.ComPort,
 			Cmd:       newPayload.Cmd,
 			Output:    "You has been sent empty command",
@@ -79,9 +75,8 @@ func runCommand() (outPutBoard string) {
 		log.Fatal(err)
 	}
 	senderData := string(buf[:n])
-	sender := strings.Split(senderData, "\n")
 	s.Close()
-	return sender[1]
+	return senderData
 }
 
 func enableCors(w http.ResponseWriter) {
